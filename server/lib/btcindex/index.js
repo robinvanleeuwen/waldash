@@ -11,3 +11,4 @@ module.exports = router;
 router.callbacks    = require('./controllers/btcindex');
 router.models       = require('./models/btcindex');
 router.get('/currentRate', router.callbacks.getCurrentRate);
+ router.get('/accountInfo', router.callbacks.getBl3pAccountInfo);
