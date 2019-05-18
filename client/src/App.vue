@@ -1,10 +1,12 @@
 <template>
   <div id="app">
       <!-- <router-view /> -->
-      <b-alert show variant="success" dismissible v-model="showRate">
-        <btcindex />
-      </b-alert>
-      <b-button variant="success" @click="showRate=true">Show Rate</b-button>
+      <div id="container">
+        <b-alert id="btcrate" show variant="success" dismissible v-model="showRate">
+          <btcindex />
+        </b-alert>
+        <b-button variant="success" @click="showRate=true">Show Rate</b-button>
+      </div>
   </div>
 </template>
 
@@ -24,6 +26,14 @@ export default {
 </script>
 
 <style>
+#btcrate {
+  font-size: 18px;
+  font-weight: bold;
+}
+#container {
+  margin-right: 40%;
+  margin-left: 40%;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
