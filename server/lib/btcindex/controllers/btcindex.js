@@ -65,8 +65,6 @@ exports.getCurrentRate = function(req, res) {
       }
     }
   });
-  
-
 };
 
 var path = require("path");
@@ -78,17 +76,15 @@ exports.getBl3pAccountInfo = function(req, res) {
   rootPath = path.dirname(require.main.filename);
   var settings = JSON.parse(fs.readFileSync(rootPath+"/.settings"));
 
+  if (!settings.bl3p_public_key || !settings.bl3p_private_key) {
+    res.status(200).send({result: "Configuration trouble."})
+  }
+
   bl3pAuth = new bl3p.Bl3pAuth(settings.bl3p_public_key, settings.bl3p_private_key);
-  console.log(bl3pAuth);
-  console.log(settings.bl3p_public_key+" "+settings.bl3p_private_key);
+  
   bl3pAuth.account_info((err, data) => {
     console.log(data);
+    res.status(200).send({result: JSON.parse(data)});
   });
-
-  bl3p.trade((err,data) => {
-    console.log(data);
-  });
-
-  
 
 };
