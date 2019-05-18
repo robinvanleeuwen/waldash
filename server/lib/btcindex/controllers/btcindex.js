@@ -1,8 +1,11 @@
 var exports = module.exports;
 var axios = require("axios");
-var currentPriceURI = "https://api.coindesk.com/v1/bpi/currentprice.json";
+var currentPriceURI = "https://api.bl3p.eu/1/BTCEUR/ticker";
 var redis = require("redis");
 var redisClient = redis.createClient();
+var Q = require("q");
+
+
 
 exports.getCurrentRate = function(req, res) {
   
@@ -14,23 +17,19 @@ exports.getCurrentRate = function(req, res) {
     currentTime.setMilliseconds(0);
     return currentTime;
   }
+  
+  Q.ninvoke(redisClient, "get", "currentRate")
+  .then(function(data) {
+    console.log(data);
+    if (data == null) {
 
-  redisClient.get("currentRate", (err, reply) => {
-      
-    if (err){
-      res.status(500).send({result: "somthing went wrong"})
-      throw err;
-    } 
-    
-    if (!reply) {
-
-      console.log("Cache empty: "+ JSON.stringify(result));
+      console.log("Cache empty: "+ JSON.stringify(data));
       
       axios.get(currentPriceURI).then((result) => {
 
         currentTime = getCurrentMinuteTime();
 
-        rate = result.data.bpi.EUR.rate;
+        rate = result.data.last;
         redisClient.set("currentRate", '{"time": "'+currentTime.toISOString()+'", "rate": "'+rate+'"}');
 
         res.status(200).send({result: {time: currentTime.toISOString(), rate: rate}});
@@ -41,7 +40,7 @@ exports.getCurrentRate = function(req, res) {
     }
     else {
 
-      var result = JSON.parse(reply);
+      var result = JSON.parse(data);
 
       currentTime = getCurrentMinuteTime();
       cachedTime  = new Date(result.time);
@@ -49,7 +48,7 @@ exports.getCurrentRate = function(req, res) {
       if (currentTime > cachedTime) {
 
         axios.get(currentPriceURI).then((result) => {
-          rate = result.data.bpi.EUR.rate;
+          rate = result.data.last;
           currentRate = '{"time": "'+currentTime.toISOString()+'", "rate": "'+rate+'"}';
           redisClient.set("currentRate", currentRate);
 
@@ -66,5 +65,30 @@ exports.getCurrentRate = function(req, res) {
       }
     }
   });
+  
+
+};
+
+var path = require("path");
+var bl3p = require("bl3p");
+var fs = require("fs");
+
+exports.getBl3pAccountInfo = function(req, res) {
+
+  rootPath = path.dirname(require.main.filename);
+  var settings = JSON.parse(fs.readFileSync(rootPath+"/.settings"));
+
+  bl3pAuth = new bl3p.Bl3pAuth(settings.bl3p_public_key, settings.bl3p_private_key);
+  console.log(bl3pAuth);
+  console.log(settings.bl3p_public_key+" "+settings.bl3p_private_key);
+  bl3pAuth.account_info((err, data) => {
+    console.log(data);
+  });
+
+  bl3p.trade((err,data) => {
+    console.log(data);
+  });
+
+  
 
 };
