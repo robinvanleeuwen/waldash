@@ -19,7 +19,6 @@ exports.setup = function(runningApp, callback) {
   // runningApp.use('/', require('hello')); // attach to root route
 
   // API endpoint attached to root route:
-  runningApp.use('/api', require('homedoc')); // attach to sub-route
   runningApp.use('/', require('btcindex')); // attach to sub-route
 
   // If you need websockets:
