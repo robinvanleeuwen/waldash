@@ -18,7 +18,7 @@ export default {
     },
     created: function() {
         this.getCurrentIndex();
-        this.timer = setInterval(this.getCurrentIndex, 4000);
+        this.timer = setInterval(this.getCurrentIndex, 5000);
 
     },
     methods: {
