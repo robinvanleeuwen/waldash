@@ -15,6 +15,7 @@
   "dependencies": {
     "app-module-path": "^2.1.0",
     "axios": "^0.18.0",
+    "bl3p": "^0.1.9",
     "body-parser": "^1.14.1",
     "config": "*",
     "consolidate": "^0.14.0",
@@ -28,6 +29,7 @@
     "node-json-rpc": "0.0.1",
     "nodebootstrap-htmlapp": "*",
     "nodebootstrap-server": "*",
+    "q": "^1.5.1",
     "redis": "^2.8.0",
     "yaml": "*"
   },
